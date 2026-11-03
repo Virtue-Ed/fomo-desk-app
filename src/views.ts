@@ -13,16 +13,18 @@ import {
   formatUsd,
   formatWhen,
   formatMultiple,
+  shortWallet,
   titleCase,
 } from './format';
 import { agentGlyph, brandMark, scoreRing, tabIcon } from './icons';
-import { isRunning, sortAgents, statusTone, TIMEFRAMES } from './model';
+import { bookView, isRunning, sortAgents, statusTone, TIMEFRAMES } from './model';
 import { statLines } from './stats';
-import type { ActivityItem, Agent, AppState, Position, Snapshot, Tab, Timeframe } from './types';
+import type { ActivityItem, Agent, AppState, Book, Position, Snapshot, Tab, Timeframe } from './types';
 
 export interface Actions {
   setTab: (tab: Tab) => void;
   setTimeframe: (tf: Timeframe) => void;
+  setBook: (book: Book) => void;
   saveToken: (raw: string) => void;
   clearToken: () => void;
   retry: () => void;
@@ -38,6 +40,8 @@ const AGENT_COLOR: Record<string, string> = {
   executor: '#b07cff',
   risk: '#ff8a34',
   telegram: '#2aabee',
+  copier: '#7aa2ff',
+  publisher: '#c5ccd6',
 };
 
 export function buildApp(state: AppState, actions: Actions): HTMLElement {
@@ -58,7 +62,10 @@ export function buildApp(state: AppState, actions: Actions): HTMLElement {
 
 export function mountDynamic(root: ParentNode, state: AppState): void {
   const host = root.querySelector<HTMLElement>('[data-chart]');
-  if (host && state.snapshot && state.tab === 'home') paintChart(host, state.snapshot, state.tf);
+  if (host && state.snapshot && state.tab === 'home') {
+    const book = bookView(state.snapshot, state.book);
+    paintChart(host, { equity: book.equity, trades: book.trades, end: book.end }, state.tf);
+  }
   bindDots(root);
 }
 
@@ -134,19 +141,23 @@ function renderGate(state: AppState, actions: Actions): HTMLElement {
 function renderHome(state: AppState, actions: Actions): HTMLElement {
   const snapshot = state.snapshot;
   if (!snapshot) return h('div');
+  const book = state.book === 'copy' && snapshot.copy ? 'copy' : 'main';
+  const view = bookView(snapshot, book);
   const page = h('div', { class: 'home' });
   const hero = h('div', { class: 'pad hero' });
-  hero.append(h('p', { class: 'balance', text: formatUsd(snapshot.stackUsd) }));
+  if (snapshot.copy) hero.append(bookToggle(book, actions));
+  if (book === 'copy') hero.append(h('p', { class: 'book-label', text: 'Copy equity' }));
+  hero.append(h('p', { class: 'balance', text: formatUsd(view.headlineUsd) }));
   const row = h('div', { class: 'pnl-row' });
-  const tone = snapshot.pnlUsd < 0 || snapshot.pnlPct < 0 ? 'neg' : 'pos';
+  const tone = view.pnlUsd < 0 || view.pnlPct < 0 ? 'neg' : 'pos';
   row.append(
     h('p', {
       class: `pnl ${tone}`,
-      text: `${formatUsd(snapshot.pnlUsd)} (${formatPct(snapshot.pnlPct, 2)})`,
+      text: `${formatUsd(view.pnlUsd)} (${formatPct(view.pnlPct, 2)})`,
     }),
   );
-  if (snapshot.multiple != null) {
-    row.append(h('span', { class: `mult ${tone}`, text: formatMultiple(snapshot.multiple) }));
+  if (view.multiple != null) {
+    row.append(h('span', { class: `mult ${tone}`, text: formatMultiple(view.multiple) }));
   }
   hero.append(row);
   page.append(hero);
@@ -156,6 +167,9 @@ function renderHome(state: AppState, actions: Actions): HTMLElement {
   wrap.append(h('div', { class: 'chart-host', attrs: { 'data-chart': '1' } }));
   chartBlock.append(wrap, renderChips(state, actions));
   page.append(chartBlock);
+  if (snapshot.copy && (snapshot.copy.positions.length || snapshot.copy.trades.length)) {
+    page.append(renderCopySection(snapshot, actions));
+  }
 
   const agents = sortAgents(snapshot.agents);
   const head = h('div', { class: 'section-head pad' });
@@ -180,6 +194,65 @@ function renderHome(state: AppState, actions: Actions): HTMLElement {
   for (const item of items) feed.append(feedRow(item, snapshot.generatedAt));
   page.append(feed);
   return page;
+}
+
+function bookToggle(book: Book, actions: Actions): HTMLElement {
+  const row = h('div', { class: 'segment', attrs: { role: 'tablist', 'aria-label': 'Ledger' } });
+  for (const [id, label] of [
+    ['main', 'Main'],
+    ['copy', 'Copy'],
+  ] as const) {
+    const on = book === id;
+    const chip = h('button', {
+      class: on ? 'segment-btn is-on' : 'segment-btn',
+      attrs: { type: 'button', role: 'tab', 'data-book': id, 'aria-selected': on ? 'true' : 'false' },
+      text: label,
+    });
+    chip.addEventListener('click', () => actions.setBook(id));
+    row.append(chip);
+  }
+  return row;
+}
+
+function renderCopySection(snapshot: Snapshot, actions: Actions): HTMLElement {
+  const copy = snapshot.copy;
+  const block = h('section', { class: 'pad copy-section' });
+  if (!copy) return block;
+  const head = h('div', { class: 'section-head' });
+  head.append(h('h2', { text: 'Copy trades' }));
+  head.append(button('linkish', 'See all', () => actions.setTab('activity')));
+  block.append(head);
+  if (copy.positions.length) {
+    const open = h('div', { class: 'feed' });
+    for (const position of copy.positions) open.append(positionRow(position, true));
+    block.append(open);
+  } else {
+    block.append(h('p', { class: 'help', text: 'No open copy positions.' }));
+  }
+  const recent = [...copy.trades].sort((a, b) => b.t - a.t).slice(0, 4);
+  if (recent.length) {
+    const feed = h('div', { class: 'feed' });
+    for (const trade of recent) {
+      feed.append(
+        feedRow(
+          {
+            t: trade.t,
+            agent: 'copier',
+            kind: trade.side,
+            symbol: trade.symbol,
+            text: trade.reason,
+            pnlUsd: trade.pnlUsd,
+            pnlPct: trade.pnlPct,
+            url: trade.url,
+            copy: true,
+          },
+          snapshot.generatedAt,
+        ),
+      );
+    }
+    block.append(feed);
+  }
+  return block;
 }
 
 function renderChips(state: AppState, actions: Actions): HTMLElement {
@@ -242,6 +315,7 @@ function renderAgents(snapshot: Snapshot): HTMLElement {
   page.append(head, summaryRow(snapshot));
   const counts = countsLine(snapshot);
   if (counts) page.append(h('p', { class: 'counts', text: counts }));
+  if (snapshot.copy?.wallets.length) page.append(leadersBlock(snapshot));
   const list = h('div', { class: 'msgs' });
   const ordered = [...snapshot.agents].sort((a, b) => (b.lastBeat ?? 0) - (a.lastBeat ?? 0));
   if (!ordered.length) list.append(h('p', { class: 'help', text: 'No agents in this snapshot.' }));
@@ -303,13 +377,18 @@ function renderActivity(snapshot: Snapshot): HTMLElement {
   page.append(h('h2', { class: 'page-title', text: 'Activity' }));
   const openHead = h('div', { class: 'section-head tight' });
   openHead.append(h('h3', { text: 'Open' }));
-  openHead.append(h('span', { class: 'running', text: String(snapshot.positions.length) }));
+  const openCount = snapshot.positions.length + (snapshot.copy?.positions.length ?? 0);
+  openHead.append(h('span', { class: 'running', text: String(openCount) }));
   page.append(openHead);
-  if (!snapshot.positions.length) {
+  const openPositions = [
+    ...snapshot.positions.map((position) => positionRow(position, false)),
+    ...(snapshot.copy?.positions ?? []).map((position) => positionRow(position, true)),
+  ];
+  if (!openPositions.length) {
     page.append(h('p', { class: 'help', text: 'No open positions.' }));
   } else {
     const open = h('div', { class: 'feed' });
-    for (const position of snapshot.positions) open.append(positionRow(position));
+    for (const row of openPositions) open.append(row);
     page.append(open);
   }
   const feedHead = h('div', { class: 'section-head' });
@@ -322,16 +401,16 @@ function renderActivity(snapshot: Snapshot): HTMLElement {
   return page;
 }
 
-function positionRow(position: Position): HTMLElement {
+function positionRow(position: Position, copy: boolean): HTMLElement {
   const pnl = position.pnlPct;
   const tone = pnl == null ? '' : pnl < 0 ? 'neg' : 'pos';
   const body = h('div', {}, [
-    h('div', { class: 'feed-title', text: position.symbol }),
+    feedTitle(position.symbol, copy),
     h('div', { class: 'feed-sub', text: positionSubtitle(position) }),
   ]);
   const nums = h('div', { class: `feed-num ${tone}` });
   if (pnl != null) {
-    nums.append(h('div', { class: 'feed-pnl', text: formatPct(pnl, Math.abs(pnl) >= 10 ? 0 : 1, true) }));
+    nums.append(h('div', { class: 'feed-pnl', text: formatPct(pnl, Math.abs(pnl) >= 100 ? 0 : 1, true) }));
   }
   nums.append(h('div', { class: 'feed-pct', text: 'open' }));
   return maybeLink(position.url, 'feed-row', [tokenAvatar(position.symbol), body, nums]);
@@ -339,8 +418,9 @@ function positionRow(position: Position): HTMLElement {
 
 function positionSubtitle(position: Position): string {
   const parts: string[] = [];
-  if (position.sizeUsd != null) parts.push(`${formatUsd(position.sizeUsd)} in`);
-  if (position.entryUsd != null) parts.push(`entry ${formatPrice(position.entryUsd)}`);
+  if (position.leader) parts.push(position.leader);
+  if (position.sizeUsd != null) parts.push(`${formatUsd(position.sizeUsd)}`);
+  if (position.entryUsd != null && !position.leader) parts.push(`entry ${formatPrice(position.entryUsd)}`);
   if (position.stopPct != null) parts.push(`stop ${formatPct(position.stopPct, 0)}`);
   return parts.join(' · ');
 }
@@ -350,13 +430,45 @@ function feedRow(item: ActivityItem, referenceMs: number): HTMLElement {
   const positive = item.pnlUsd != null && item.pnlUsd > 0;
   const tone = negative ? 'neg' : positive ? 'pos' : '';
   const body = h('div', {}, [
-    h('div', { class: 'feed-title', text: activityTitle(item) }),
+    feedTitle(activityTitle(item), item.copy),
     h('div', { class: 'feed-sub', text: activitySubtitle(item, formatWhen(item.t, referenceMs)) }),
   ]);
   const nums = h('div', { class: `feed-num ${tone}` });
   if (item.pnlUsd != null) nums.append(h('div', { class: 'feed-pnl', text: formatUsd(item.pnlUsd, true) }));
   if (item.pnlPct != null) nums.append(h('div', { class: 'feed-pct', text: formatActivityPct(item.pnlPct) }));
   return maybeLink(item.url, 'feed-row', [tokenAvatar(item.symbol ?? item.agent ?? '?'), body, nums]);
+}
+
+function feedTitle(text: string, copy: boolean): HTMLElement {
+  const title = h('div', { class: 'feed-title' });
+  title.append(document.createTextNode(text));
+  if (copy) title.append(h('span', { class: 'tag-copy', text: 'COPY' }));
+  return title;
+}
+
+function leadersBlock(snapshot: Snapshot): HTMLElement {
+  const copy = snapshot.copy;
+  const block = h('section', { class: 'leaders-block' });
+  if (!copy) return block;
+  const head = h('div', { class: 'section-head tight' });
+  head.append(h('h3', { text: 'Following' }));
+  block.append(head);
+  if (copy.leadersAt != null) {
+    block.append(h('p', { class: 'help', text: `As of ${formatWhen(copy.leadersAt, snapshot.generatedAt)} CT` }));
+  }
+  block.append(leaderList(snapshot));
+  return block;
+}
+
+function leaderList(snapshot: Snapshot): HTMLElement {
+  const list = h('div', { class: 'leaders' });
+  for (const wallet of snapshot.copy?.wallets ?? []) {
+    const row = h('div', { class: 'leader' });
+    row.append(h('div', { class: 'leader-handle', text: wallet.handle || 'Unknown' }));
+    if (wallet.wallet) row.append(h('div', { class: 'leader-wallet', text: shortWallet(wallet.wallet) }));
+    list.append(row);
+  }
+  return list;
 }
 
 function tokenAvatar(seed: string): HTMLElement {
@@ -404,6 +516,20 @@ function renderAccount(state: AppState, actions: Actions): HTMLElement {
     );
   }
   page.append(connection);
+  if (state.snapshot?.copy?.wallets.length) {
+    const leaders = h('section', { class: 'card' });
+    leaders.append(h('h3', { class: 'card-title', text: 'Following' }));
+    if (state.snapshot.copy.leadersAt != null) {
+      leaders.append(
+        h('p', {
+          class: 'help',
+          text: `Leaders as of ${formatWhen(state.snapshot.copy.leadersAt, state.snapshot.generatedAt)} CT`,
+        }),
+      );
+    }
+    leaders.append(leaderList(state.snapshot));
+    page.append(leaders);
+  }
 
   const form = h('form', { class: 'stack' });
   form.append(h('label', { class: 'label', text: 'Fine-grained GitHub token', attrs: { for: 'token-input' } }));

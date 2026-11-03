@@ -1,6 +1,6 @@
 import { formatUsd } from './format';
 import { sliceSeries } from './model';
-import type { EquityPoint, Snapshot, Timeframe } from './types';
+import type { EquityPoint, Timeframe, Trade } from './types';
 
 const NS = 'http://www.w3.org/2000/svg';
 const VB_W = 360;
@@ -13,11 +13,15 @@ const PALETTE = ['#3ee08a', '#ff9f43', '#e879f9', '#67e8f9', '#fb7185'];
 
 let paintToken = 0;
 
-export function paintChart(host: HTMLElement, snapshot: Snapshot, tf: Timeframe): void {
+export function paintChart(
+  host: HTMLElement,
+  series: { equity: EquityPoint[]; trades: Trade[]; end: number },
+  tf: Timeframe,
+): void {
   const token = ++paintToken;
   const draw = () => {
     if (token !== paintToken || !host.isConnected) return;
-    renderChart(host, snapshot, tf);
+    renderChart(host, series, tf);
   };
   draw();
   if (document.fonts && document.fonts.status !== 'loaded') {
@@ -25,9 +29,13 @@ export function paintChart(host: HTMLElement, snapshot: Snapshot, tf: Timeframe)
   }
 }
 
-function renderChart(host: HTMLElement, snapshot: Snapshot, tf: Timeframe): void {
+function renderChart(
+  host: HTMLElement,
+  series: { equity: EquityPoint[]; trades: Trade[]; end: number },
+  tf: Timeframe,
+): void {
   host.replaceChildren();
-  const { equity, trades } = sliceSeries(snapshot, tf);
+  const { equity, trades } = sliceSeries(series.equity, series.trades, series.end, tf);
   if (equity.length < 2) {
     const empty = document.createElement('p');
     empty.className = 'chart-empty';

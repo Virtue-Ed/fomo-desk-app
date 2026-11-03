@@ -47,8 +47,10 @@ The manifest, apple touch icon, `apple-mobile-web-app-capable`, theme color, and
 
 - **PAPER** or **LIVE** is the badge at the top right, taken from `mode`.
 - Home: stack, dollar and percent change, multiple (`stack / start`), equity line with trade markers, timeframe chips, agent cards, recent activity.
-- Agents: each agent’s latest `line`, newest heartbeat first.
-- Activity: open positions, then the feed. Coin rows open the `url` already in the snapshot. The app does not add a referral parameter.
+- When the snapshot includes a copy ledger (`copy_equity_usd`, `copy_trades`, `copy_positions`, `copy_wallets`), Home shows a **Main / Copy** switch. Copy uses `copy_equity_usd` as the balance and the change versus `copy_start_stack_usd`, so open marks are included. **Copy trades** lists open copy positions (symbol, size, live percent, leader) and recent copy fills. Each row opens the snapshot `url` unchanged.
+- Agents and Account list followed leaders as a handle plus a shortened wallet, when `copy_wallets` is present.
+- Activity includes copy fills, tagged **COPY**. Older snapshots without these keys look the same as before.
+- Coin rows open the `url` already in the snapshot. The app does not add a referral parameter.
 - Times are `America/Chicago`.
 - While the tab is visible the app polls every 30 seconds. **Last updated … ago** follows `generated_at`. If that time is more than 5 minutes old, a stale warning is shown.
 

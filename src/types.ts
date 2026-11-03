@@ -2,6 +2,8 @@ export type Tab = 'home' | 'agents' | 'activity' | 'account';
 
 export type Timeframe = 'live' | '1h' | '4h' | '1d' | '1w' | 'all';
 
+export type Book = 'main' | 'copy';
+
 export interface EquityPoint {
   t: number;
   v: number;
@@ -26,6 +28,8 @@ export interface Position {
   pnlPct: number | null;
   stopPct: number | null;
   url: string | null;
+  /** Set on copy positions from the matching trade reason, such as "copy pointfarmcap". */
+  leader: string | null;
 }
 
 export interface Agent {
@@ -53,6 +57,40 @@ export interface ActivityItem {
   pnlUsd: number | null;
   pnlPct: number | null;
   url: string | null;
+  copy: boolean;
+}
+
+export interface CopyWallet {
+  handle: string;
+  wallet: string;
+  rank: number | null;
+}
+
+/** PAPER (or LIVE) copy-trading ledger. Null when the snapshot has none of these keys. */
+export interface CopyBook {
+  modeLabel: string | null;
+  equityUsd: number | null;
+  startUsd: number;
+  stackUsd: number | null;
+  pnlUsd: number;
+  pnlPct: number;
+  multiple: number | null;
+  equity: EquityPoint[];
+  trades: Trade[];
+  positions: Position[];
+  wallets: CopyWallet[];
+  leadersAt: number | null;
+}
+
+export interface BookView {
+  headlineUsd: number;
+  startUsd: number;
+  pnlUsd: number;
+  pnlPct: number;
+  multiple: number | null;
+  equity: EquityPoint[];
+  trades: Trade[];
+  end: number;
 }
 
 export interface Snapshot {
@@ -72,6 +110,7 @@ export interface Snapshot {
   counts: Counts;
   activity: ActivityItem[];
   lastReportUrl: string | null;
+  copy: CopyBook | null;
 }
 
 export interface AppState {
@@ -83,4 +122,5 @@ export interface AppState {
   loading: boolean;
   demo: boolean;
   hasToken: boolean;
+  book: Book;
 }

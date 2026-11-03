@@ -1,6 +1,11 @@
+import { leaderHandle } from './format';
 import type {
   ActivityItem,
   Agent,
+  Book,
+  BookView,
+  CopyBook,
+  CopyWallet,
   Counts,
   EquityPoint,
   Position,
@@ -29,7 +34,7 @@ export const TIMEFRAMES: { id: Timeframe; label: string }[] = [
   { id: 'all', label: 'ALL' },
 ];
 
-const HOME_ORDER = ['scanner', 'auditor', 'analyst', 'executor', 'risk', 'scanner_ws', 'telegram'];
+const HOME_ORDER = ['scanner', 'auditor', 'analyst', 'executor', 'risk', 'copier', 'scanner_ws', 'telegram', 'publisher'];
 
 function rec(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -150,6 +155,15 @@ function parseTrade(value: unknown, index: number): Trade | null {
   };
 }
 
+function leaderForSymbol(symbol: string, trades: Trade[]): string | null {
+  const related = trades.filter((trade) => trade.symbol === symbol && trade.reason).sort((a, b) => b.t - a.t);
+  for (const trade of related) {
+    const handle = leaderHandle(trade.reason);
+    if (handle) return handle;
+  }
+  return null;
+}
+
 function parsePosition(value: unknown): Position | null {
   const row = rec(value);
   if (!row) return null;
@@ -162,6 +176,7 @@ function parsePosition(value: unknown): Position | null {
     pnlPct: num(row.pnl_pct),
     stopPct: num(row.stop_pct),
     url: httpsUrl(row.url),
+    leader: null,
   };
 }
 
@@ -205,6 +220,7 @@ function parseActivity(value: unknown): ActivityItem | null {
     pnlUsd: num(row.pnl_usd),
     pnlPct: num(row.pnl_pct),
     url: httpsUrl(row.url),
+    copy: false,
   };
 }
 
@@ -220,17 +236,156 @@ function parseCounts(value: unknown): Counts {
   };
 }
 
+function parseCopyEquity(value: unknown): { equity: number | null; series: EquityPoint[] } {
+  if (Array.isArray(value)) {
+    const series = parseEquity(value);
+    return { equity: series.at(-1)?.v ?? null, series };
+  }
+  return { equity: num(value), series: [] };
+}
+
+function parseWallet(value: unknown): CopyWallet | null {
+  const row = rec(value);
+  if (!row) return null;
+  const wallet = str(row.wallet);
+  const handle = str(row.handle) || str(row.name);
+  if (!wallet && !handle) return null;
+  return { handle: handle || shortFallback(wallet), wallet, rank: num(row.rank) };
+}
+
+function shortFallback(wallet: string): string {
+  return wallet.length <= 12 ? wallet : `${wallet.slice(0, 4)}…${wallet.slice(-4)}`;
+}
+
+function parseCopy(row: Record<string, unknown>, generatedAt: number): CopyBook | null {
+  const equityParsed = parseCopyEquity(row.copy_equity_usd);
+  const trades = list(row.copy_trades)
+    .map(parseTrade)
+    .filter((item): item is Trade => item != null)
+    .sort((a, b) => a.t - b.t);
+  const positions = list(row.copy_positions)
+    .map(parsePosition)
+    .filter((item): item is Position => item != null)
+    .map((position) => ({ ...position, leader: leaderForSymbol(position.symbol, trades) }));
+  const wallets = list(row.copy_wallets)
+    .map(parseWallet)
+    .filter((item): item is CopyWallet => item != null);
+  const leadersAt = time(row.copy_leaders_captured_at);
+  const stackUsd = num(row.copy_stack_usd);
+  const startField = num(row.copy_start_stack_usd);
+  const realizedUsd = num(row.copy_pnl_usd);
+  const realizedPct = num(row.copy_pnl_pct);
+  const modeLabel = str(row.copy_mode).toUpperCase() || null;
+  const knowEquity = equityParsed.equity != null || equityParsed.series.length > 0;
+  const present =
+    knowEquity ||
+    trades.length > 0 ||
+    positions.length > 0 ||
+    wallets.length > 0 ||
+    stackUsd != null ||
+    startField != null ||
+    realizedUsd != null ||
+    realizedPct != null ||
+    modeLabel != null ||
+    leadersAt != null;
+  if (!present) return null;
+
+  const headline = equityParsed.equity ?? equityParsed.series.at(-1)?.v ?? stackUsd ?? startField ?? 0;
+  const startUsd = startField ?? equityParsed.series[0]?.v ?? headline;
+  const pnlUsd = knowEquity ? headline - startUsd : (realizedUsd ?? headline - startUsd);
+  const pnlPct = knowEquity
+    ? startUsd !== 0
+      ? (pnlUsd / startUsd) * 100
+      : 0
+    : (realizedPct ?? (startUsd !== 0 ? (pnlUsd / startUsd) * 100 : 0));
+  let series = equityParsed.series;
+  if (series.length < 2 && knowEquity) {
+    const end = generatedAt || Date.now();
+    const firstTrade = trades[0]?.t;
+    let begin = firstTrade != null ? Math.min(firstTrade, end - 60_000) : end - 60 * 60 * 1000;
+    if (begin >= end) begin = end - 60_000;
+    series = [
+      { t: begin, v: startUsd },
+      { t: end, v: headline },
+    ];
+  }
+  return {
+    modeLabel,
+    equityUsd: knowEquity ? headline : null,
+    startUsd,
+    stackUsd,
+    pnlUsd,
+    pnlPct,
+    multiple: startUsd > 0 ? headline / startUsd : null,
+    equity: series,
+    trades,
+    positions,
+    wallets,
+    leadersAt,
+  };
+}
+
+function isCopyActivity(item: ActivityItem): boolean {
+  if (/^copy\b/i.test(item.text)) return true;
+  return item.agent === 'copier' && /buy|sell|push|copy/.test(item.kind.toLowerCase());
+}
+
+function sameCopyEvent(item: ActivityItem, trade: Trade): boolean {
+  if (!item.url || !trade.url || item.url !== trade.url) return false;
+  return Math.abs(item.t - trade.t) <= 2 * 60 * 1000;
+}
+
+function tradeToActivity(trade: Trade): ActivityItem {
+  return {
+    t: trade.t,
+    agent: 'copier',
+    kind: trade.side,
+    symbol: trade.symbol,
+    text: trade.reason,
+    pnlUsd: trade.pnlUsd,
+    pnlPct: trade.pnlPct,
+    url: trade.url,
+    copy: true,
+  };
+}
+
+function mergeCopyActivity(activity: ActivityItem[], trades: Trade[]): ActivityItem[] {
+  const tagged = activity.map((item) => ({ ...item, copy: item.copy || isCopyActivity(item) }));
+  const extras: ActivityItem[] = [];
+  for (const trade of trades) {
+    const match = tagged.find((item) => sameCopyEvent(item, trade));
+    if (match) {
+      match.copy = true;
+      continue;
+    }
+    extras.push(tradeToActivity(trade));
+  }
+  return [...tagged, ...extras].sort((a, b) => b.t - a.t);
+}
+
 export function normalizeSnapshot(raw: unknown): Snapshot {
   const row = rec(raw) ?? {};
   const equity = parseEquity(row.equity);
   const generated = time(row.generated_at);
+  const generatedAt = generated ?? equity.at(-1)?.t ?? Date.now();
   const stackUsd = num(row.stack_usd) ?? equity.at(-1)?.v ?? 0;
   const startStackUsd = num(row.start_stack_usd) ?? equity[0]?.v ?? 0;
   const pnlUsd = num(row.pnl_usd) ?? stackUsd - startStackUsd;
   const pnlPct = num(row.pnl_pct) ?? (startStackUsd !== 0 ? (pnlUsd / startStackUsd) * 100 : 0);
   const mode = parseMode(row.mode);
+  const trades = list(row.trades)
+    .map(parseTrade)
+    .filter((item): item is Trade => item != null)
+    .sort((a, b) => a.t - b.t);
+  const copy = parseCopy(row, generatedAt);
+  const activity = mergeCopyActivity(
+    list(row.activity)
+      .map(parseActivity)
+      .filter((item): item is ActivityItem => item != null),
+    copy?.trades ?? [],
+  );
   return {
-    generatedAt: generated ?? equity.at(-1)?.t ?? Date.now(),
+    generatedAt,
     generatedAtKnown: generated != null,
     mode: mode.mode,
     modeLabel: mode.modeLabel,
@@ -240,10 +395,7 @@ export function normalizeSnapshot(raw: unknown): Snapshot {
     pnlPct,
     multiple: startStackUsd > 0 ? stackUsd / startStackUsd : null,
     equity,
-    trades: list(row.trades)
-      .map(parseTrade)
-      .filter((item): item is Trade => item != null)
-      .sort((a, b) => a.t - b.t),
+    trades,
     positions: list(row.positions)
       .map(parsePosition)
       .filter((item): item is Position => item != null),
@@ -251,27 +403,55 @@ export function normalizeSnapshot(raw: unknown): Snapshot {
       .map(parseAgent)
       .filter((item): item is Agent => item != null),
     counts: parseCounts(row.counts),
-    activity: list(row.activity)
-      .map(parseActivity)
-      .filter((item): item is ActivityItem => item != null)
-      .sort((a, b) => b.t - a.t),
+    activity,
     lastReportUrl: httpsUrl(row.last_report_url),
+    copy,
+  };
+}
+
+export function bookView(snapshot: Snapshot, book: Book): BookView {
+  if (book === 'copy' && snapshot.copy) {
+    const copy = snapshot.copy;
+    const headline = copy.equityUsd ?? copy.equity.at(-1)?.v ?? copy.stackUsd ?? 0;
+    return {
+      headlineUsd: headline,
+      startUsd: copy.startUsd,
+      pnlUsd: copy.pnlUsd,
+      pnlPct: copy.pnlPct,
+      multiple: copy.multiple,
+      equity: copy.equity,
+      trades: copy.trades,
+      end: Math.max(snapshot.generatedAt, copy.equity.at(-1)?.t ?? 0, copy.trades.at(-1)?.t ?? 0),
+    };
+  }
+  return {
+    headlineUsd: snapshot.stackUsd,
+    startUsd: snapshot.startStackUsd,
+    pnlUsd: snapshot.pnlUsd,
+    pnlPct: snapshot.pnlPct,
+    multiple: snapshot.multiple,
+    equity: snapshot.equity,
+    trades: snapshot.trades,
+    end: Math.max(snapshot.generatedAtKnown ? snapshot.generatedAt : 0, snapshot.equity.at(-1)?.t ?? 0),
   };
 }
 
 export function sliceSeries(
-  snapshot: Snapshot,
+  equity: EquityPoint[],
+  trades: Trade[],
+  end: number,
   tf: Timeframe,
 ): { equity: EquityPoint[]; trades: Trade[] } {
-  const end = Math.max(snapshot.generatedAtKnown ? snapshot.generatedAt : 0, snapshot.equity.at(-1)?.t ?? 0);
   const start = tf === 'all' ? Number.NEGATIVE_INFINITY : end - WINDOW_MS[tf];
-  const equity = snapshot.equity.filter((point) => point.t >= start && point.t <= end + 60_000);
-  const prior = [...snapshot.equity].reverse().find((point) => point.t < start);
-  if (prior && equity.length && equity[0].t > start && start !== Number.NEGATIVE_INFINITY) {
-    equity.unshift({ t: start, v: prior.v });
+  const sliced = equity.filter((point) => point.t >= start && point.t <= end + 60_000);
+  const prior = [...equity].reverse().find((point) => point.t < start);
+  if (prior && sliced.length && sliced[0].t > start && start !== Number.NEGATIVE_INFINITY) {
+    sliced.unshift({ t: start, v: prior.v });
   }
-  const trades = snapshot.trades.filter((trade) => trade.t >= start && trade.t <= end + 60_000);
-  return { equity, trades };
+  return {
+    equity: sliced,
+    trades: trades.filter((trade) => trade.t >= start && trade.t <= end + 60_000),
+  };
 }
 
 export function sortAgents(agents: Agent[]): Agent[] {

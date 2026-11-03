@@ -88,6 +88,12 @@ function pulse(): SVGSVGElement {
   return el;
 }
 
+function copies(): SVGSVGElement {
+  const el = svg();
+  el.append(path('M9 8h10v10H9z', stroke), path('M5 5h10', stroke), path('M5 5v10', stroke));
+  return el;
+}
+
 function plane(): SVGSVGElement {
   const el = svg();
   el.append(path('M3 11.2 21 3.6l-7.6 16.6-2.4-6.6L3 11.2z', { fill: 'currentColor' }));
@@ -116,6 +122,8 @@ export function agentGlyph(name: string): SVGSVGElement {
       return flame();
     case 'telegram':
       return plane();
+    case 'copier':
+      return copies();
     default:
       return dot();
   }

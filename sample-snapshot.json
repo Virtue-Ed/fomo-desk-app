@@ -629,6 +629,17 @@
       "last_beat": "2026-11-03T15:32:00.000Z",
       "line": "Night closed. $200 to $1,240.67. 7 refused.",
       "stats": {}
+    },
+    {
+      "name": "copier",
+      "status": "running",
+      "last_beat": "2026-11-03T16:11:00.000Z",
+      "line": "Copied VELVET from northstar. 2 open.",
+      "stats": {
+        "copied": 3,
+        "open": 2,
+        "following": 2
+      }
     }
   ],
   "counts": {
@@ -778,8 +789,94 @@
       "pnl_usd": 110,
       "pnl_pct": 64,
       "url": "https://fomo.family/coin?address=demo-nova"
+    },
+    {
+      "t": "2026-11-03T15:44:00.000Z",
+      "agent": "copier",
+      "kind": "push",
+      "symbol": null,
+      "text": "Copy BUY $40.00 VELVET (northstar +12s)",
+      "pnl_usd": null,
+      "pnl_pct": null,
+      "url": "https://fomo.family/coin?address=demo-velvet"
     }
   ],
   "last_report_url": null,
-  "desk": "sample"
+  "desk": "sample",
+  "copy_mode": "PAPER",
+  "copy_stack_usd": 157.5,
+  "copy_start_stack_usd": 200,
+  "copy_pnl_usd": 12.5,
+  "copy_pnl_pct": 6.25,
+  "copy_equity_usd": 236.8,
+  "copy_leaders_captured_at": "2026-11-03T15:52:00.000Z",
+  "copy_wallets": [
+    {
+      "wallet": "NorthstarDemo1111111111111111111111111111",
+      "handle": "northstar",
+      "rank": 1,
+      "pnl_24h_usd": 48210.12,
+      "source": "leaderboard"
+    },
+    {
+      "wallet": "WicklowDemo222222222222222222222222222222",
+      "handle": "wicklow",
+      "rank": 2,
+      "pnl_24h_usd": 19004.55,
+      "source": "leaderboard"
+    }
+  ],
+  "copy_trades": [
+    {
+      "id": "c-velvet",
+      "symbol": "VELVET",
+      "side": "buy",
+      "t": "2026-11-03T15:44:00.000Z",
+      "usd": 40,
+      "pnl_usd": null,
+      "pnl_pct": null,
+      "reason": "copy northstar",
+      "url": "https://fomo.family/coin?address=demo-velvet"
+    },
+    {
+      "id": "c-pip",
+      "symbol": "PIP",
+      "side": "buy",
+      "t": "2026-11-03T15:54:00.000Z",
+      "usd": 30,
+      "pnl_usd": null,
+      "pnl_pct": null,
+      "reason": "copy wicklow",
+      "url": "https://fomo.family/coin?address=demo-pip"
+    },
+    {
+      "id": "c-nest",
+      "symbol": "NEST",
+      "side": "sell",
+      "t": "2026-11-03T16:04:00.000Z",
+      "usd": 52.5,
+      "pnl_usd": 12.5,
+      "pnl_pct": 18,
+      "reason": "copy wicklow",
+      "url": "https://fomo.family/coin?address=demo-nest"
+    }
+  ],
+  "copy_positions": [
+    {
+      "symbol": "VELVET",
+      "entry_usd": 0.00412,
+      "size_usd": 40,
+      "pnl_pct": 4.2,
+      "stop_pct": null,
+      "url": "https://fomo.family/coin?address=demo-velvet"
+    },
+    {
+      "symbol": "PIP",
+      "entry_usd": 0.0184,
+      "size_usd": 30,
+      "pnl_pct": 11.4,
+      "stop_pct": -8,
+      "url": "https://fomo.family/coin?address=demo-pip"
+    }
+  ]
 }

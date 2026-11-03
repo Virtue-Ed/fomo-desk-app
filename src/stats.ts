@@ -4,6 +4,8 @@ const PREFERRED = [
   'taken_apart',
   'pools',
   'sold',
+  'copied',
+  'following',
   'in_usd',
   'open',
   'rejected',
