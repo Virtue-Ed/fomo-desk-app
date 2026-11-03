@@ -4,7 +4,7 @@ import { pollIntervalMs } from './config';
 import { fetchSnapshot } from './github';
 import { normalizeSnapshot, rebaseToNow } from './model';
 import { cleanToken, clearToken, readToken, writeToken } from './storage';
-import type { AppState, Tab, Timeframe } from './types';
+import type { AppState, Book, Tab, Timeframe } from './types';
 import { buildApp, mountDynamic, staleNow, staleText, updatedText } from './views';
 
 const state: AppState = {
@@ -16,6 +16,7 @@ const state: AppState = {
   loading: false,
   demo: false,
   hasToken: false,
+  book: 'main',
 };
 
 let pollTimer = 0;
@@ -25,6 +26,7 @@ let etag: string | null = null;
 const actions = {
   setTab,
   setTimeframe,
+  setBook,
   saveToken,
   clearToken: onClearToken,
   retry: () => {
@@ -58,7 +60,14 @@ function stripSecretsFromUrl(): void {
   state.notice = 'A token was removed from the page address. Paste it in Account so it is not kept in browser history.';
 }
 
+function setBook(book: Book): void {
+  if (state.book === book) return;
+  state.book = book;
+  render(false);
+}
+
 function render(resetScroll = false): void {
+  if (state.book === 'copy' && !state.snapshot?.copy) state.book = 'main';
   const previous = document.querySelector<HTMLElement>('.main');
   const scroll = resetScroll ? 0 : (previous?.scrollTop ?? 0);
   const typing =

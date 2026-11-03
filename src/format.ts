@@ -131,7 +131,8 @@ export function activitySubtitle(item: ActivityItem, when: string): string {
   const parts: string[] = [];
   if (item.agent) parts.push(agentLabel(item.agent));
   const title = activityTitle(item).toLowerCase();
-  if (item.text && item.text.toLowerCase() !== title) parts.push(item.text);
+  const detail = item.copy ? (leaderHandle(item.text) ?? item.text) : item.text;
+  if (detail && detail.toLowerCase() !== title) parts.push(detail);
   if (when) parts.push(when);
   return parts.join(' · ');
 }
@@ -144,11 +145,26 @@ const AGENT_NAMES: Record<string, string> = {
   executor: 'Executor',
   risk: 'Risk',
   telegram: 'Telegram',
+  copier: 'Copier',
+  publisher: 'Publisher',
 };
 
 export function agentLabel(name: string): string {
   const key = name.trim().toLowerCase();
   return AGENT_NAMES[key] ?? titleCase(name);
+}
+
+/** "copy pointfarmcap" → "pointfarmcap". Other reasons stay untouched. */
+export function leaderHandle(reason: string): string | null {
+  const match = /^(?:copy|copied)\s+(\S+)$/i.exec(reason.trim());
+  const handle = match?.[1]?.trim() ?? '';
+  return handle || null;
+}
+
+export function shortWallet(wallet: string): string {
+  const compact = wallet.trim();
+  if (compact.length <= 12) return compact;
+  return `${compact.slice(0, 4)}…${compact.slice(-4)}`;
 }
 
 export function titleCase(value: string): string {
