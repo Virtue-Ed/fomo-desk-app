@@ -1,0 +1,785 @@
+{
+  "generated_at": "2026-11-03T16:12:00.000Z",
+  "mode": "PAPER",
+  "stack_usd": 1240.67,
+  "start_stack_usd": 200,
+  "pnl_usd": 1040.67,
+  "pnl_pct": 520.34,
+  "equity": [
+    {
+      "t": "2026-10-16T16:12:00.000Z",
+      "v": 200
+    },
+    {
+      "t": "2026-10-20T16:12:00.000Z",
+      "v": 200
+    },
+    {
+      "t": "2026-10-23T16:12:00.000Z",
+      "v": 200
+    },
+    {
+      "t": "2026-10-25T16:12:00.000Z",
+      "v": 200
+    },
+    {
+      "t": "2026-10-28T16:12:00.000Z",
+      "v": 200
+    },
+    {
+      "t": "2026-10-28T19:12:00.000Z",
+      "v": 201.75
+    },
+    {
+      "t": "2026-10-28T22:12:00.000Z",
+      "v": 206.74
+    },
+    {
+      "t": "2026-10-29T01:12:00.000Z",
+      "v": 214.2
+    },
+    {
+      "t": "2026-10-29T04:12:00.000Z",
+      "v": 223
+    },
+    {
+      "t": "2026-10-29T07:12:00.000Z",
+      "v": 231.8
+    },
+    {
+      "t": "2026-10-29T10:12:00.000Z",
+      "v": 239.26
+    },
+    {
+      "t": "2026-10-29T13:12:00.000Z",
+      "v": 244.25
+    },
+    {
+      "t": "2026-10-29T16:12:00.000Z",
+      "v": 246
+    },
+    {
+      "t": "2026-10-29T19:12:00.000Z",
+      "v": 248.74
+    },
+    {
+      "t": "2026-10-29T22:12:00.000Z",
+      "v": 256.54
+    },
+    {
+      "t": "2026-10-30T01:12:00.000Z",
+      "v": 268.22
+    },
+    {
+      "t": "2026-10-30T04:12:00.000Z",
+      "v": 282
+    },
+    {
+      "t": "2026-10-30T07:12:00.000Z",
+      "v": 295.78
+    },
+    {
+      "t": "2026-10-30T10:12:00.000Z",
+      "v": 307.46
+    },
+    {
+      "t": "2026-10-30T13:12:00.000Z",
+      "v": 315.26
+    },
+    {
+      "t": "2026-10-30T16:12:00.000Z",
+      "v": 318
+    },
+    {
+      "t": "2026-10-30T19:12:00.000Z",
+      "v": 321.43
+    },
+    {
+      "t": "2026-10-30T22:12:00.000Z",
+      "v": 331.18
+    },
+    {
+      "t": "2026-10-31T01:12:00.000Z",
+      "v": 345.78
+    },
+    {
+      "t": "2026-10-31T04:12:00.000Z",
+      "v": 363
+    },
+    {
+      "t": "2026-10-31T07:12:00.000Z",
+      "v": 380.22
+    },
+    {
+      "t": "2026-10-31T10:12:00.000Z",
+      "v": 394.82
+    },
+    {
+      "t": "2026-10-31T13:12:00.000Z",
+      "v": 404.57
+    },
+    {
+      "t": "2026-10-31T16:12:00.000Z",
+      "v": 408
+    },
+    {
+      "t": "2026-10-31T19:12:00.000Z",
+      "v": 412.07
+    },
+    {
+      "t": "2026-10-31T22:12:00.000Z",
+      "v": 423.67
+    },
+    {
+      "t": "2026-11-01T01:12:00.000Z",
+      "v": 441.03
+    },
+    {
+      "t": "2026-11-01T04:12:00.000Z",
+      "v": 461.5
+    },
+    {
+      "t": "2026-11-01T07:12:00.000Z",
+      "v": 481.97
+    },
+    {
+      "t": "2026-11-01T10:12:00.000Z",
+      "v": 499.33
+    },
+    {
+      "t": "2026-11-01T13:12:00.000Z",
+      "v": 510.93
+    },
+    {
+      "t": "2026-11-01T16:12:00.000Z",
+      "v": 515
+    },
+    {
+      "t": "2026-11-01T19:12:00.000Z",
+      "v": 519.83
+    },
+    {
+      "t": "2026-11-01T22:12:00.000Z",
+      "v": 533.6
+    },
+    {
+      "t": "2026-11-02T01:12:00.000Z",
+      "v": 554.2
+    },
+    {
+      "t": "2026-11-02T04:12:00.000Z",
+      "v": 578.5
+    },
+    {
+      "t": "2026-11-02T07:12:00.000Z",
+      "v": 602.8
+    },
+    {
+      "t": "2026-11-02T10:12:00.000Z",
+      "v": 623.4
+    },
+    {
+      "t": "2026-11-02T13:12:00.000Z",
+      "v": 637.17
+    },
+    {
+      "t": "2026-11-02T16:12:00.000Z",
+      "v": 642
+    },
+    {
+      "t": "2026-11-02T17:12:00.000Z",
+      "v": 643.81
+    },
+    {
+      "t": "2026-11-02T18:12:00.000Z",
+      "v": 649.1
+    },
+    {
+      "t": "2026-11-02T19:12:00.000Z",
+      "v": 657.52
+    },
+    {
+      "t": "2026-11-02T20:12:00.000Z",
+      "v": 668.5
+    },
+    {
+      "t": "2026-11-02T21:12:00.000Z",
+      "v": 681.28
+    },
+    {
+      "t": "2026-11-02T22:12:00.000Z",
+      "v": 695
+    },
+    {
+      "t": "2026-11-02T23:12:00.000Z",
+      "v": 708.72
+    },
+    {
+      "t": "2026-11-03T00:12:00.000Z",
+      "v": 721.5
+    },
+    {
+      "t": "2026-11-03T01:12:00.000Z",
+      "v": 732.48
+    },
+    {
+      "t": "2026-11-03T02:12:00.000Z",
+      "v": 740.9
+    },
+    {
+      "t": "2026-11-03T03:12:00.000Z",
+      "v": 746.19
+    },
+    {
+      "t": "2026-11-03T04:12:00.000Z",
+      "v": 748
+    },
+    {
+      "t": "2026-11-03T05:12:00.000Z",
+      "v": 753.63
+    },
+    {
+      "t": "2026-11-03T06:12:00.000Z",
+      "v": 769
+    },
+    {
+      "t": "2026-11-03T07:12:00.000Z",
+      "v": 790
+    },
+    {
+      "t": "2026-11-03T08:12:00.000Z",
+      "v": 811
+    },
+    {
+      "t": "2026-11-03T09:12:00.000Z",
+      "v": 826.37
+    },
+    {
+      "t": "2026-11-03T10:12:00.000Z",
+      "v": 832
+    },
+    {
+      "t": "2026-11-03T10:27:00.000Z",
+      "v": 832.95
+    },
+    {
+      "t": "2026-11-03T10:42:00.000Z",
+      "v": 835.75
+    },
+    {
+      "t": "2026-11-03T10:57:00.000Z",
+      "v": 840.2
+    },
+    {
+      "t": "2026-11-03T11:12:00.000Z",
+      "v": 846
+    },
+    {
+      "t": "2026-11-03T11:27:00.000Z",
+      "v": 852.75
+    },
+    {
+      "t": "2026-11-03T11:42:00.000Z",
+      "v": 860
+    },
+    {
+      "t": "2026-11-03T11:57:00.000Z",
+      "v": 867.25
+    },
+    {
+      "t": "2026-11-03T12:12:00.000Z",
+      "v": 874
+    },
+    {
+      "t": "2026-11-03T12:27:00.000Z",
+      "v": 879.8
+    },
+    {
+      "t": "2026-11-03T12:42:00.000Z",
+      "v": 884.25
+    },
+    {
+      "t": "2026-11-03T12:57:00.000Z",
+      "v": 887.05
+    },
+    {
+      "t": "2026-11-03T13:12:00.000Z",
+      "v": 888
+    },
+    {
+      "t": "2026-11-03T13:27:00.000Z",
+      "v": 893.27
+    },
+    {
+      "t": "2026-11-03T13:42:00.000Z",
+      "v": 906
+    },
+    {
+      "t": "2026-11-03T13:57:00.000Z",
+      "v": 918.73
+    },
+    {
+      "t": "2026-11-03T14:12:00.000Z",
+      "v": 924
+    },
+    {
+      "t": "2026-11-03T14:27:00.000Z",
+      "v": 938
+    },
+    {
+      "t": "2026-11-03T14:42:00.000Z",
+      "v": 952
+    },
+    {
+      "t": "2026-11-03T14:57:00.000Z",
+      "v": 970
+    },
+    {
+      "t": "2026-11-03T15:12:00.000Z",
+      "v": 988
+    },
+    {
+      "t": "2026-11-03T15:27:00.000Z",
+      "v": 1004
+    },
+    {
+      "t": "2026-11-03T15:29:00.000Z",
+      "v": 1003.65
+    },
+    {
+      "t": "2026-11-03T15:31:00.000Z",
+      "v": 1002.68
+    },
+    {
+      "t": "2026-11-03T15:33:00.000Z",
+      "v": 1001.24
+    },
+    {
+      "t": "2026-11-03T15:35:00.000Z",
+      "v": 999.58
+    },
+    {
+      "t": "2026-11-03T15:37:00.000Z",
+      "v": 998
+    },
+    {
+      "t": "2026-11-03T15:39:00.000Z",
+      "v": 996.76
+    },
+    {
+      "t": "2026-11-03T15:41:00.000Z",
+      "v": 996.09
+    },
+    {
+      "t": "2026-11-03T15:42:00.000Z",
+      "v": 996
+    },
+    {
+      "t": "2026-11-03T15:44:00.000Z",
+      "v": 1002
+    },
+    {
+      "t": "2026-11-03T15:46:00.000Z",
+      "v": 1008
+    },
+    {
+      "t": "2026-11-03T15:48:00.000Z",
+      "v": 1031.5
+    },
+    {
+      "t": "2026-11-03T15:50:00.000Z",
+      "v": 1055
+    },
+    {
+      "t": "2026-11-03T15:52:00.000Z",
+      "v": 1075.5
+    },
+    {
+      "t": "2026-11-03T15:54:00.000Z",
+      "v": 1096
+    },
+    {
+      "t": "2026-11-03T15:56:00.000Z",
+      "v": 1119
+    },
+    {
+      "t": "2026-11-03T15:58:00.000Z",
+      "v": 1142
+    },
+    {
+      "t": "2026-11-03T16:00:00.000Z",
+      "v": 1160
+    },
+    {
+      "t": "2026-11-03T16:02:00.000Z",
+      "v": 1178
+    },
+    {
+      "t": "2026-11-03T16:04:00.000Z",
+      "v": 1197.5
+    },
+    {
+      "t": "2026-11-03T16:05:00.000Z",
+      "v": 1204
+    },
+    {
+      "t": "2026-11-03T16:07:00.000Z",
+      "v": 1220.5
+    },
+    {
+      "t": "2026-11-03T16:08:00.000Z",
+      "v": 1226
+    },
+    {
+      "t": "2026-11-03T16:10:00.000Z",
+      "v": 1236
+    },
+    {
+      "t": "2026-11-03T16:12:00.000Z",
+      "v": 1240.67
+    }
+  ],
+  "trades": [
+    {
+      "id": "t-nova",
+      "symbol": "NOVA",
+      "side": "sell",
+      "t": "2026-11-02T23:52:00.000Z",
+      "usd": 180,
+      "pnl_usd": 110,
+      "pnl_pct": 64,
+      "reason": "target",
+      "url": "https://fomo.family/coin?address=demo-nova",
+      "venue": "paper"
+    },
+    {
+      "id": "t-widget",
+      "symbol": "WIDGET",
+      "side": "sell",
+      "t": "2026-11-01T22:32:00.000Z",
+      "usd": 90,
+      "pnl_usd": 42.1,
+      "pnl_pct": 28,
+      "reason": "time stop",
+      "url": "https://fomo.family/coin?address=demo-widget",
+      "venue": "paper"
+    },
+    {
+      "id": "t-lev-buy",
+      "symbol": "LEVERHEDGE",
+      "side": "buy",
+      "t": "2026-11-03T12:52:00.000Z",
+      "usd": 59.49,
+      "pnl_usd": null,
+      "pnl_pct": null,
+      "reason": "entry",
+      "url": "https://fomo.family/coin?address=demo-leverhedge",
+      "venue": "paper"
+    },
+    {
+      "id": "t-lev-sell",
+      "symbol": "LEVERHEDGE",
+      "side": "sell",
+      "t": "2026-11-03T15:20:00.000Z",
+      "usd": 440.23,
+      "pnl_usd": 380.74,
+      "pnl_pct": 186,
+      "reason": "12% off the top",
+      "url": "https://fomo.family/coin?address=demo-leverhedge",
+      "venue": "paper"
+    },
+    {
+      "id": "t-claw",
+      "symbol": "CLAW",
+      "side": "sell",
+      "t": "2026-11-03T15:45:00.000Z",
+      "usd": 150,
+      "pnl_usd": 64.18,
+      "pnl_pct": 29,
+      "reason": "trail",
+      "url": "https://fomo.family/coin?address=demo-claw",
+      "venue": "paper"
+    },
+    {
+      "id": "t-kite",
+      "symbol": "KITE",
+      "side": "sell",
+      "t": "2026-11-03T15:51:00.000Z",
+      "usd": 210,
+      "pnl_usd": 82.32,
+      "pnl_pct": 36,
+      "reason": "12% off the top",
+      "url": "https://fomo.family/coin?address=demo-kite",
+      "venue": "paper"
+    },
+    {
+      "id": "t-vamp",
+      "symbol": "VAMPIRE",
+      "side": "sell",
+      "t": "2026-11-03T15:59:00.000Z",
+      "usd": 64,
+      "pnl_usd": -18.4,
+      "pnl_pct": -22,
+      "reason": "hard stop",
+      "url": "https://fomo.family/coin?address=demo-vampire",
+      "venue": "paper"
+    },
+    {
+      "id": "t-argon",
+      "symbol": "ARGON",
+      "side": "sell",
+      "t": "2026-11-03T16:05:00.000Z",
+      "usd": 208,
+      "pnl_usd": 67.71,
+      "pnl_pct": 48,
+      "reason": "trailing stop",
+      "url": "https://fomo.family/coin?address=demo-argon",
+      "venue": "paper"
+    },
+    {
+      "id": "t-doob",
+      "symbol": "DOOB",
+      "side": "sell",
+      "t": "2026-11-03T16:10:00.000Z",
+      "usd": 240,
+      "pnl_usd": 87.45,
+      "pnl_pct": 57,
+      "reason": "trailing stop",
+      "url": "https://fomo.family/coin?address=demo-doob",
+      "venue": "paper"
+    }
+  ],
+  "positions": [
+    {
+      "symbol": "MOCHI",
+      "entry_usd": 0.000184,
+      "size_usd": 40,
+      "pnl_pct": 6.4,
+      "stop_pct": -6,
+      "url": "https://fomo.family/coin?address=demo-mochi"
+    }
+  ],
+  "agents": [
+    {
+      "name": "scanner",
+      "status": "running",
+      "last_beat": "2026-11-03T16:08:00.000Z",
+      "line": "LEVERHEDGE graduated. Liquidity over $40k.",
+      "stats": {
+        "pools": 6927,
+        "no_volume": 11,
+        "copycat": 3
+      }
+    },
+    {
+      "name": "scanner_ws",
+      "status": "idle",
+      "last_beat": "2026-11-03T15:47:00.000Z",
+      "line": "Websocket quiet. Poll scanner is covering the books.",
+      "stats": {
+        "pools": 6927
+      }
+    },
+    {
+      "name": "auditor",
+      "status": "running",
+      "last_beat": "2026-11-03T16:09:00.000Z",
+      "line": "LEVERHEDGE 8/8 clean. Sent to Analyst.",
+      "stats": {
+        "taken_apart": 27,
+        "rejected": 7,
+        "top10_hold_pct": 58,
+        "flag": "WEIRD"
+      }
+    },
+    {
+      "name": "analyst",
+      "status": "running",
+      "last_beat": "2026-11-03T16:10:00.000Z",
+      "line": "LEVERHEDGE passed. Not a chase, buyers real.",
+      "stats": {
+        "score": 91,
+        "rejected": 4
+      }
+    },
+    {
+      "name": "executor",
+      "status": "running",
+      "last_beat": "2026-11-03T16:10:30.000Z",
+      "line": "LEVERHEDGE: $59.49 in. Stop -6%, trail 12%.",
+      "stats": {
+        "in_usd": 59.49,
+        "stop_pct": -6,
+        "open": 1
+      }
+    },
+    {
+      "name": "risk",
+      "status": "running",
+      "last_beat": "2026-11-03T16:11:36.000Z",
+      "line": "Sold LEVERHEDGE 12% off the top. +$380.74",
+      "stats": {
+        "sold": 6,
+        "trail_pct": 12
+      }
+    },
+    {
+      "name": "telegram",
+      "status": "idle",
+      "last_beat": "2026-11-03T15:32:00.000Z",
+      "line": "Night closed. $200 to $1,240.67. 7 refused.",
+      "stats": {}
+    }
+  ],
+  "counts": {
+    "seen": 6927,
+    "scanner_killed": 6401,
+    "auditor_refused": 7,
+    "analyst_rejected": 4,
+    "waiting": 1
+  },
+  "activity": [
+    {
+      "t": "2026-11-03T16:10:00.000Z",
+      "agent": "risk",
+      "kind": "sell",
+      "symbol": "DOOB",
+      "text": "trailing stop",
+      "pnl_usd": 87.45,
+      "pnl_pct": 57,
+      "url": "https://fomo.family/coin?address=demo-doob"
+    },
+    {
+      "t": "2026-11-03T16:05:00.000Z",
+      "agent": "risk",
+      "kind": "sell",
+      "symbol": "ARGON",
+      "text": "trailing stop",
+      "pnl_usd": 67.71,
+      "pnl_pct": 48,
+      "url": "https://fomo.family/coin?address=demo-argon"
+    },
+    {
+      "t": "2026-11-03T15:59:00.000Z",
+      "agent": "risk",
+      "kind": "stop",
+      "symbol": "VAMPIRE",
+      "text": "hard stop",
+      "pnl_usd": -18.4,
+      "pnl_pct": -22,
+      "url": "https://fomo.family/coin?address=demo-vampire"
+    },
+    {
+      "t": "2026-11-03T15:51:00.000Z",
+      "agent": "risk",
+      "kind": "sell",
+      "symbol": "KITE",
+      "text": "12% off the top",
+      "pnl_usd": 82.32,
+      "pnl_pct": 36,
+      "url": "https://fomo.family/coin?address=demo-kite"
+    },
+    {
+      "t": "2026-11-03T15:45:00.000Z",
+      "agent": "risk",
+      "kind": "sell",
+      "symbol": "CLAW",
+      "text": "trail",
+      "pnl_usd": 64.18,
+      "pnl_pct": 29,
+      "url": "https://fomo.family/coin?address=demo-claw"
+    },
+    {
+      "t": "2026-11-03T15:20:00.000Z",
+      "agent": "risk",
+      "kind": "sell",
+      "symbol": "LEVERHEDGE",
+      "text": "12% off the top",
+      "pnl_usd": 380.74,
+      "pnl_pct": 186,
+      "url": "https://fomo.family/coin?address=demo-leverhedge"
+    },
+    {
+      "t": "2026-11-03T15:17:00.000Z",
+      "agent": "executor",
+      "kind": "buy",
+      "symbol": "MOCHI",
+      "text": "$40.00 in",
+      "pnl_usd": null,
+      "pnl_pct": null,
+      "url": "https://fomo.family/coin?address=demo-mochi"
+    },
+    {
+      "t": "2026-11-03T12:52:00.000Z",
+      "agent": "executor",
+      "kind": "buy",
+      "symbol": "LEVERHEDGE",
+      "text": "$59.49 in. Stop -6%, trail 12%.",
+      "pnl_usd": null,
+      "pnl_pct": null,
+      "url": "https://fomo.family/coin?address=demo-leverhedge"
+    },
+    {
+      "t": "2026-11-03T12:44:00.000Z",
+      "agent": "analyst",
+      "kind": "pass",
+      "symbol": "LEVERHEDGE",
+      "text": "Not a chase, buyers real.",
+      "pnl_usd": null,
+      "pnl_pct": null,
+      "url": "https://fomo.family/coin?address=demo-leverhedge"
+    },
+    {
+      "t": "2026-11-03T12:38:00.000Z",
+      "agent": "auditor",
+      "kind": "pass",
+      "symbol": "LEVERHEDGE",
+      "text": "8/8 clean. Sent to Analyst.",
+      "pnl_usd": null,
+      "pnl_pct": null,
+      "url": "https://fomo.family/coin?address=demo-leverhedge"
+    },
+    {
+      "t": "2026-11-03T12:32:00.000Z",
+      "agent": "scanner",
+      "kind": "pass",
+      "symbol": "LEVERHEDGE",
+      "text": "Graduated. Liquidity over $40k.",
+      "pnl_usd": null,
+      "pnl_pct": null,
+      "url": "https://fomo.family/coin?address=demo-leverhedge"
+    },
+    {
+      "t": "2026-11-03T15:42:00.000Z",
+      "agent": "auditor",
+      "kind": "refused",
+      "symbol": "WEIRD",
+      "text": "top 10 hold 58%",
+      "pnl_usd": null,
+      "pnl_pct": null,
+      "url": "https://fomo.family/coin?address=demo-weird"
+    },
+    {
+      "t": "2026-11-03T09:32:00.000Z",
+      "agent": "analyst",
+      "kind": "rejected",
+      "symbol": "DUST",
+      "text": "chase, thin buyers",
+      "pnl_usd": null,
+      "pnl_pct": null,
+      "url": "https://fomo.family/coin?address=demo-dust"
+    },
+    {
+      "t": "2026-11-02T23:52:00.000Z",
+      "agent": "risk",
+      "kind": "sell",
+      "symbol": "NOVA",
+      "text": "target",
+      "pnl_usd": 110,
+      "pnl_pct": 64,
+      "url": "https://fomo.family/coin?address=demo-nova"
+    }
+  ],
+  "last_report_url": null,
+  "desk": "sample"
+}
